@@ -2,7 +2,7 @@
 
 TickerView is a versatile text animation scroller library for iOS that allows text to smoothly scroll from right to left with automatic visibility management. It optimizes text size based on the label's height and provides an easy way to customize text content and view sizes.
 
-![Demo](demo.gif)
+![Demo](./Images/tickerViewDemo.gif)
 
 ## Features
 
@@ -44,13 +44,13 @@ import TickerView
 tickerView.setText("TickerView")
 ```
 
-4. Start the animation
+5. Start the animation
 
 ```swift
 tickerView.startAnimation()
 ```
 
-5. Optionally, stop the animation at any time.
+6. Optionally, stop the animation at any time.
 
 ```swift
 tickerView.stopAnimation()
