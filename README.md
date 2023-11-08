@@ -35,8 +35,10 @@ import TickerView
    - Turn on useTextAutoSizing: Enable the useTextAutoSizing checkbox to automatically set the maximum text width based on the TickerView's size.
    - Set the textSize: Enter the text size in points in the textSize field.
    - Set the textColor: Use the textColor field to set the color of the text.
+  
+3. Create an outlet for the TickerView in your view controller and customize its properties programmatically.
      
-3. Set the text content for the TickerView
+4. Set the text content for the TickerView
 
 ```swift
 tickerView.setText("TickerView")
