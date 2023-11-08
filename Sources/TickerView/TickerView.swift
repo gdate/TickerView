@@ -1,8 +1,42 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+/**
+ TickerView - Text Animation Scroller
+
+ The TickerView library provides the following features for animating text from right to left.
+
+ Features:
+ - Text that goes off-screen is automatically hidden.
+ - When all text is hidden, it resets to the initial position and the animation restarts.
+ - The library is versatile and easily applicable to different texts and view sizes.
+ - It combines UILabel and UIScrollView to control animation and scrolling.
+ - Users can set the text and start/stop the animation.
+ - If the text width exceeds the scrollView's width, the text animates within the scrollable area.
+
+ Author: gdate
+ License: This library is provided under the MIT License. Please refer to the LICENSE file for details.
+
+ Usage Example:
+ ```swift
+ import TickerView
+ 
+ let viewController = UIViewController()
+ let tickerView = TickerView(frame: .init(x: 0, y: 0, width: viewController.view.frame.width, height: 44))
+ tickerView.backgroundColor = .black
+ tickerView.setText("TickerView")
+ tickerView.startAnimation()
+ viewController.view.addSubview(tickerView)
+ ```
+ 
+ Contact:
+ - GitHub: https://github.com/gdate/TickerView
+ - Email: guiltyapi01@gmail.com
+ 
+ Version: 1.0.0
+ Last Updated: 2023-11-08
+ */
 
 import UIKit
 
+/// TickerView is the main class responsible for animating text horizontally from right to left within a UIScrollView.
 final class TickerView: UIView {
     @IBInspectable
     private let animationDuration: TimeInterval = 5.0
@@ -24,6 +58,8 @@ final class TickerView: UIView {
         configureScrollView()
     }
     
+    /// Sets the text to be displayed in the scrolling animation view.
+    /// - Parameter text: The text to be displayed in the animation view.
     func setText(_ text: String) {
         label.text = text
         label.textColor = textColor
@@ -31,6 +67,8 @@ final class TickerView: UIView {
         label.frame = CGRect(x: frame.size.width, y: 0, width: label.bounds.width, height: frame.size.height)
     }
     
+    /// Starts the scrolling animation of the text within the view.
+    /// Call this method to begin the animation that makes the text scroll from right to left.
     func startAnimation() {
         guard !isAnimating else { return }
         resetLabelFrame()
@@ -38,6 +76,8 @@ final class TickerView: UIView {
         isAnimating = true
     }
     
+    /// Stops the currently running scrolling animation.
+    /// Call this method to halt the scrolling animation of the text within the view.
     func stopAnimation() {
         label.layer.removeAllAnimations()
         isAnimating = false
