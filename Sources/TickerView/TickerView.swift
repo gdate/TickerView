@@ -6,8 +6,7 @@
  Features:
  - Text that goes off-screen is automatically hidden.
  - When all text is hidden, it resets to the initial position and the animation restarts.
- - The library is versatile and easily applicable to different texts and view sizes.
- - It combines UILabel and UIScrollView to control animation and scrolling.
+ - Text size is optimized based on the label's height.
  - Users can set the text and start/stop the animation.
  - If the text width exceeds the scrollView's width, the text animates within the scrollable area.
 
@@ -39,7 +38,13 @@ import UIKit
 /// TickerView is the main class responsible for animating text horizontally from right to left within a UIScrollView.
 public final class TickerView: UIView {
     @IBInspectable
-    private let animationDuration: TimeInterval = 5.0
+    private var animationDuration: Double = 5.0
+    
+    @IBInspectable
+    private var useTextAutoSizing: Bool = false
+    
+    @IBInspectable
+    private var textSize: Double = 17.0
     
     @IBInspectable
     private var textColor: UIColor = .white
@@ -63,8 +68,16 @@ public final class TickerView: UIView {
     public func setText(_ text: String) {
         label.text = text
         label.textColor = textColor
-        label.sizeToFit()
-        label.frame = CGRect(x: frame.size.width, y: 0, width: label.bounds.width, height: frame.size.height)
+        label.textAlignment = .left
+        label.frame = CGRect(x: frame.size.width, y: 0, width: frame.size.width, height: frame.size.height)
+        if useTextAutoSizing {
+            label.adjustsFontSizeToFitWidth = true
+            label.minimumScaleFactor = 0.5
+            label.numberOfLines = 1
+            label.font = label.font.withSize(label.frame.size.height)
+        } else {
+            label.font = .systemFont(ofSize: textSize)
+        }
     }
     
     /// Starts the scrolling animation of the text within the view.
@@ -111,16 +124,46 @@ public final class TickerView: UIView {
     }
 }
 
+extension TickerView {
+    struct Configuration {
+        let animationDuration: Double?
+        let useTextAutoSizing: Bool?
+        let textSize: Double?
+        let textColor: UIColor?
+    }
+    
+    func inject(configuraiton: Configuration) {
+        if let animationDuration = configuraiton.animationDuration {
+            self.animationDuration = animationDuration
+        }
+        if let useTextAutoSizing = configuraiton.useTextAutoSizing {
+            self.useTextAutoSizing = useTextAutoSizing
+        }
+        if let textSize = configuraiton.textSize {
+            self.textSize = textSize
+        }
+        if let textColor = configuraiton.textColor {
+            self.textColor = textColor
+        }
+    }
+}
+
 #if DEBUG
 import SwiftUI
 
 struct ViewControllerWrapper: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIViewController
+    let configuration: TickerView.Configuration
+    
+    init(configuration: TickerView.Configuration) {
+        self.configuration = configuration
+    }
     
     func makeUIViewController(context: Context) -> UIViewController {
         let viewController = UIViewController()
         let tickerView = TickerView(frame: .init(x: 0, y: 0, width: viewController.view.frame.width, height: 44))
         tickerView.backgroundColor = .black
+        tickerView.inject(configuraiton: configuration)
         tickerView.setText("TickerView")
         tickerView.startAnimation()
         viewController.view.addSubview(tickerView)
@@ -130,8 +173,35 @@ struct ViewControllerWrapper: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
     }
 }
-
-#Preview(body: {
-    ViewControllerWrapper()
-})
+struct TickerViewPreview: PreviewProvider {
+    static var previews: some View {
+        Group {
+            ViewControllerWrapper(configuration: .init(
+                animationDuration: 1,
+                useTextAutoSizing: false,
+                textSize: nil,
+                textColor: nil)).previewDisplayName("AnimationDuration 1")
+            ViewControllerWrapper(configuration: .init(
+                animationDuration: nil,
+                useTextAutoSizing: false,
+                textSize: nil,
+                textColor: nil)).previewDisplayName("AutoSizing False")
+            ViewControllerWrapper(configuration: .init(
+                animationDuration: nil,
+                useTextAutoSizing: true,
+                textSize: nil,
+                textColor: nil)).previewDisplayName("AutoSizing True")
+            ViewControllerWrapper(configuration: .init(
+                animationDuration: nil,
+                useTextAutoSizing: false,
+                textSize: 30,
+                textColor: nil)).previewDisplayName("TextSize 20")
+            ViewControllerWrapper(configuration: .init(
+                animationDuration: nil,
+                useTextAutoSizing: false,
+                textSize: nil,
+                textColor: .gray)).previewDisplayName("TextColor Gray")
+        }
+    }
+}
 #endif
