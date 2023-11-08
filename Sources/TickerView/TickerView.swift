@@ -37,7 +37,7 @@
 import UIKit
 
 /// TickerView is the main class responsible for animating text horizontally from right to left within a UIScrollView.
-final class TickerView: UIView {
+public final class TickerView: UIView {
     @IBInspectable
     private let animationDuration: TimeInterval = 5.0
     
@@ -60,7 +60,7 @@ final class TickerView: UIView {
     
     /// Sets the text to be displayed in the scrolling animation view.
     /// - Parameter text: The text to be displayed in the animation view.
-    func setText(_ text: String) {
+    public func setText(_ text: String) {
         label.text = text
         label.textColor = textColor
         label.sizeToFit()
@@ -69,7 +69,7 @@ final class TickerView: UIView {
     
     /// Starts the scrolling animation of the text within the view.
     /// Call this method to begin the animation that makes the text scroll from right to left.
-    func startAnimation() {
+    public func startAnimation() {
         guard !isAnimating else { return }
         resetLabelFrame()
         animateLabel()
@@ -78,7 +78,7 @@ final class TickerView: UIView {
     
     /// Stops the currently running scrolling animation.
     /// Call this method to halt the scrolling animation of the text within the view.
-    func stopAnimation() {
+    public func stopAnimation() {
         label.layer.removeAllAnimations()
         isAnimating = false
     }
