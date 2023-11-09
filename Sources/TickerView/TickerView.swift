@@ -69,15 +69,7 @@ public final class TickerView: UIView {
         label.text = text
         label.textColor = textColor
         label.textAlignment = .left
-        label.frame = CGRect(x: frame.size.width, y: 0, width: frame.size.width, height: frame.size.height)
-        if useTextAutoSizing {
-            label.adjustsFontSizeToFitWidth = true
-            label.minimumScaleFactor = 0.5
-            label.numberOfLines = 1
-            label.font = label.font.withSize(label.frame.size.height)
-        } else {
-            label.font = .systemFont(ofSize: textSize)
-        }
+        adjustLabelFontSize()
     }
     
     /// Starts the scrolling animation of the text within the view.
@@ -122,6 +114,21 @@ public final class TickerView: UIView {
                 self?.animateLabel()
             }
     }
+    
+    private func adjustLabelFontSize() {
+        if useTextAutoSizing {
+            label.font = label.font.withSize(frame.size.height)
+        } else {
+            label.font = .systemFont(ofSize: textSize)
+            let labelHeight = label.font.pointSize
+            let maxHeight = frame.size.height
+            if labelHeight > maxHeight {
+                label.font = label.font.withSize(frame.size.height)
+            }
+        }
+        let labelSize = label.intrinsicContentSize
+        label.frame = CGRect(x: frame.size.width, y: 0, width: labelSize.width, height: frame.size.height)
+    }
 }
 
 extension TickerView {
@@ -164,7 +171,7 @@ struct ViewControllerWrapper: UIViewControllerRepresentable {
         let tickerView = TickerView(frame: .init(x: 0, y: 0, width: viewController.view.frame.width, height: 44))
         tickerView.backgroundColor = .black
         tickerView.inject(configuraiton: configuration)
-        tickerView.setText("TickerView")
+        tickerView.setText("The TickerView library provides the following features for animating text from right to left.")
         tickerView.startAnimation()
         viewController.view.addSubview(tickerView)
         return viewController
@@ -194,8 +201,13 @@ struct TickerViewPreview: PreviewProvider {
             ViewControllerWrapper(configuration: .init(
                 animationDuration: nil,
                 useTextAutoSizing: false,
-                textSize: 30,
-                textColor: nil)).previewDisplayName("TextSize 20")
+                textSize: 11,
+                textColor: nil)).previewDisplayName("TextSize 11")
+            ViewControllerWrapper(configuration: .init(
+                animationDuration: nil,
+                useTextAutoSizing: false,
+                textSize: 100,
+                textColor: nil)).previewDisplayName("TextSize 100")
             ViewControllerWrapper(configuration: .init(
                 animationDuration: nil,
                 useTextAutoSizing: false,
