@@ -62,7 +62,12 @@ public final class TickerView: UIView {
         super.init(coder: coder)
         configureScrollView()
     }
-    
+
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        updateScrollViewFrame()
+    }
+
     /// Sets the text to be displayed in the scrolling animation view.
     /// - Parameter text: The text to be displayed in the animation view.
     public func setText(_ text: String) {
@@ -96,7 +101,12 @@ public final class TickerView: UIView {
         scrollView.addSubview(label)
         addSubview(scrollView)
     }
-    
+
+    private func updateScrollViewFrame() {
+        scrollView.frame = bounds
+        scrollView.contentSize = CGSize(width: frame.size.width, height: frame.size.height)
+    }
+
     private func resetLabelFrame() {
         label.frame.origin.x = frame.size.width
     }
